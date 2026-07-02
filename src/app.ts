@@ -1,10 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 // @types/packagename
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 //! creating app instance
 const app = express();
 
 //! using middlewares
+app.use(express.json({limit: "10mb"}));
 
 //! using routes
 
@@ -19,7 +21,23 @@ app.get("/", (req: Request, res: Response, next: NextFunction)=>{
 });
 
 //! path not found
+app.use((req: Request, res: Response, next: NextFunction)=>{
+    const message= `Can not ${req.method} on ${req.body}`;
+
+    // res.status(404).json({
+    //     message,
+    //     success: false,
+    //     status: "fail",
+    //     data: null
+    // });
+    const error:any = new Error(message);
+    error.status = "fail";
+    error.statusCode= 404;
+    next(error);
+});
 
 export default app;
 
+//* using error handler
+app.use(errorHandler);
 // dev depen

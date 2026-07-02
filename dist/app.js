@@ -19,5 +19,14 @@ app.get("/", (req, res, next) => {
     });
 });
 //! path not found
+app.use((req, res, next) => {
+    const message = `Can not ${req.method} on ${req.body}`;
+    res.status(404).json({
+        message,
+        success: false,
+        status: "fail",
+        data: null
+    });
+});
 exports.default = app;
 // dev depen
