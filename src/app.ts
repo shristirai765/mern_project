@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 // @types/packagename
 import { errorHandler } from "./middlewares/errorHandler.middleware";
+import authRoutes from "./routes/auth.routes";
 
 //! creating app instance
 const app = express();
@@ -8,7 +9,6 @@ const app = express();
 //! using middlewares
 app.use(express.json({limit: "10mb"}));
 
-//! using routes
 
 //* health route
 app.get("/", (req: Request, res: Response, next: NextFunction)=>{
@@ -19,6 +19,9 @@ app.get("/", (req: Request, res: Response, next: NextFunction)=>{
         data: null,
     });
 });
+
+//! using routes
+app.use('/api/v1/auth', authRoutes);
 
 //! path not found
 app.use((req: Request, res: Response, next: NextFunction)=>{
