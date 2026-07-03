@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user.model";
+import {hashPassword} from "../utils/bcrypt.utils";
 
 //* register
 export const register = async (req: Request, res: Response, next: NextFunction)=>{
@@ -30,6 +31,8 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
         const user = new User({full_name, email, password, phone});
 
         //* hash password
+        const hashPass = await hashPassword(password);
+        user.password = hashPass;
 
         //* handle profile_image upload
 
