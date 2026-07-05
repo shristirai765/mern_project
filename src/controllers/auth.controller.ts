@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import User from "../models/user.model";
+import User from "../models/auth.model";
 import {hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import appError from "../utils/appError.utils";
 
@@ -73,6 +73,7 @@ export const login = async (req: Request, res: Response, next: NextFunction)=>{
         if(!user){
             throw new appError("credentials does not match", 400);
         };
+        
         //* compare password
         const isPasswordMatch = await comparePassword(password, user.password);
         if(!isPasswordMatch){
