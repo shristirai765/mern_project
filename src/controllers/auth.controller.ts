@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import User from "../models/auth.model";
+import User from "../models/user.model";
 import {hashPassword, comparePassword } from "../utils/bcrypt.utils";
-import appError from "../utils/appError.utils";
+import AppError from "../utils/appError.utils";
 
 //* register
 export const register = async (req: Request, res: Response, next: NextFunction)=>{
@@ -9,7 +9,7 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
         const {full_name, email, password, phone } = req.body;
 
         if(!full_name){
-            throw new appError("full_name is required", 400);
+            throw new AppError("full_name is required", 400);
             // const error: any = new Error("full_name is required");
             // error.statusCode = 400;
             // error.status= "fail";
@@ -17,13 +17,13 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
 
         }
         if(!email){
-            throw new appError("email is required", 400);
+            throw new AppError("email is required", 400);
             // const error: any = new Error("email is required");
             // error.statusCode = 400;
             // error.status= "fail";
             // throw error;
         }
-        if(!password) throw new appError("password is required", 400);
+        if(!password) throw new AppError("password is required", 400);
         //     {
         //     const error: any = new Error("password is required");
         //     error.statusCode = 400;
@@ -63,21 +63,21 @@ export const login = async (req: Request, res: Response, next: NextFunction)=>{
         //email, password
         const {email, password} = req.body;
         if(!email){
-            throw new appError("email is required", 400);
+            throw new AppError("email is required", 400);
         }
-        if(!password) throw new appError("password is required", 400);
+        if(!password) throw new AppError("password is required", 400);
 
         //* find user by email
-        const user = await User.findOne({email: email});
+        const user = await User.findOne({email: email}).select("+password"); //-password
 
         if(!user){
-            throw new appError("credentials does not match", 400);
+            throw new AppError("credentials does not match", 400);
         };
-        
+
         //* compare password
         const isPasswordMatch = await comparePassword(password, user.password);
         if(!isPasswordMatch){
-            throw new appError("credentials does not match", 400);
+            throw new AppError("credentials does not match", 400);
         };
 
 
@@ -94,7 +94,6 @@ export const login = async (req: Request, res: Response, next: NextFunction)=>{
         next(error);
     }
 }
-
 
 //* get profile
 //* change password
