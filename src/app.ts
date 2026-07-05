@@ -1,7 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 // @types/packagename
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-import authRoutes from "./routes/auth.routes";
+
+//! importing routes
+import routes from "./routes";
 
 //! creating app instance
 const app = express();
@@ -21,7 +23,11 @@ app.get("/", (req: Request, res: Response, next: NextFunction)=>{
 });
 
 //! using routes
-app.use('/api/v1/auth', authRoutes);
+// app.use('/api/v1/auth', authRoutes);
+
+// app.use('/api/v1/user', userRoutes);
+app.use('/api/v1', routes);
+
 
 //! path not found
 app.use((req: Request, res: Response, next: NextFunction)=>{
