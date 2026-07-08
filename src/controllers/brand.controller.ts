@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from "../utils/appError.utils";
 import Brand from "../models/brand.model";
+import { catchAsync } from "../utils/catchAsync.utils";
+
+
 
 //* create
-export const create = async (req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const createBrand = catchAsync(
+    async (req: Request, res: Response)=>{
         const {name, description} = req.body;
 
         if(!name){
@@ -24,32 +27,39 @@ export const create = async (req: Request, res: Response, next: NextFunction)=>{
             data: brand
         });
         
-
-    }catch(error){
-        next(error);
-    }
-};
+}
+)
 
 //* read/ get
-export const getAllBrands = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
-        const brand = await Brand.find({});
+export const getAll = catchAsync(
+    async (req: Request, res: Response, next: NextFunction)=>{
+        const {name, description} = req.body;
 
+        if(!name){
+            throw new AppError ("name is required", 400);
+        }
+
+        const brand = new Brand({name, description});
+        
+        //* handle logo upload
+
+        //* save brand
+        await brand.save();
         res.status(201).json({
-            message: "all brands fetched",
+            message: "brand created",
             success: true,
             status: "success",
             data: brand
         });
+        
 
-    }catch(error){
-        next(error);
-    }
-};
+   
+}
+)
 
 //* get by id
-export const getById = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const getById = catchAsync(
+    async(req: Request, res: Response, next: NextFunction)=>{
         const {id} = req.params;
         const brand = await Brand.findOne({_id: id});
 
@@ -64,14 +74,13 @@ export const getById = async(req: Request, res: Response, next: NextFunction)=>{
             data: brand
         });
 
-    }catch(error){
-        next(error);
-    }
-};
+   
+}
+);
 
 //* update
-export const update = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const update = catchAsync(
+    async(req: Request, res: Response, next: NextFunction)=>{
         const {id}= req.params;
         const brand = await Brand.findByIdAndUpdate({_id: id});
         if(!brand ){
@@ -85,14 +94,13 @@ export const update = async(req: Request, res: Response, next: NextFunction)=>{
             data: brand
         });
 
-    }catch(error){
-        next(error);
-    }
-};
+    
+}
+);
 
 //* delete
-export const remove = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const remove = catchAsync(
+    async(req: Request, res: Response, next: NextFunction)=>{
         const {id}= req.params;
         const brand = await Brand.findByIdAndDelete({_id: id});
         if(!brand ){
@@ -100,13 +108,12 @@ export const remove = async(req: Request, res: Response, next: NextFunction)=>{
         }
 
         res.status(201).json({
-            message: "brand deleted",
+            message: "brand updated",
             success: true,
             status: "success",
-            data: null
+            data: brand
         });
 
-    }catch(error){
-        next(error);
-    }
-};
+    
+}
+);

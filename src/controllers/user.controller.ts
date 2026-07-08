@@ -66,3 +66,5 @@ export const getById = async(req: Request, res: Response, next: NextFunction)=>{
         next(error);
     }
 };
+
+//* delete user

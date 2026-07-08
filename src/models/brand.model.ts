@@ -5,16 +5,19 @@ import mongoose from "mongoose";
 const brandSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: true,
+        required: [true, "name is required"],
         minLength: 3,
         trim: true,
     },
     description:{
         type: String,
-        required: true
+        trim: true,
+        minLength: 25,
+        maxLength: 500,
     },
     logo:{
         type: String,
+        trim: true,
 
     }
 },{timestamps: true});

@@ -2,10 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import User from "../models/user.model";
 import {hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
+import { catchAsync } from "../utils/catchAsync.utils";
 
 //* register
-export const register = async (req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const register = catchAsync(
+    async (req: Request, res: Response, next: NextFunction)=>{
         const {full_name, email, password, phone } = req.body;
 
         if(!full_name){
@@ -51,15 +52,14 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
                 data: user,
             });
 
-    }catch(error){
-        next(error);
-    }
+    
 }
+)
 
 
 //* login
-export const login = async (req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const login = catchAsync(
+    async (req: Request, res: Response, next: NextFunction)=>{
         //email, password
         const {email, password} = req.body;
         if(!email){
@@ -90,10 +90,9 @@ export const login = async (req: Request, res: Response, next: NextFunction)=>{
             success: true,
             data: user,
         });
-    }catch(error){
-        next(error);
-    }
+    
 }
+)
 
 //* get profile
 //* change password
