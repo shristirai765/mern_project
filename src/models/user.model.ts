@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Role } from "../types/enum.types";
 
 const userSchema = new mongoose.Schema({
     full_name:{
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type: String,
-        enum: ["USER", "ADMIN", "SUPER ADMIN"],
+        enum: Role,
         default: "USER",
     },
     phone:{
