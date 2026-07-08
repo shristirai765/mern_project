@@ -8,6 +8,8 @@ import { catchAsync } from "../utils/catchAsync.utils";
 export const register = catchAsync(
     async (req: Request, res: Response, next: NextFunction)=>{
         const {full_name, email, password, phone } = req.body;
+        const file = req.file;
+        console.log(file);
 
         if(!full_name){
             throw new AppError("full_name is required", 400);
