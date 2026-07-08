@@ -1,7 +1,7 @@
 import express from "express";
 import {
-  create,
-  deleteBrand,
+  createBrand,
+  remove,
   getAll,
   getById,
   update,
@@ -16,12 +16,12 @@ router.get("/", getAll);
 router.get("/:id", getById);
 
 // create
-router.post("/", create);
+router.post("/", createBrand);
 
 // update
 router.put("/:id", update);
 
 // delete
-router.delete("/:id", deleteBrand);
+router.delete("/:id", remove);
 
 export default router;
