@@ -3,6 +3,9 @@ import User from "../models/user.model";
 import {hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { upload } from "../utils/cloudinary.utils";
+
+const uploadFolder = '/profile_image';
 
 //* register
 export const register = catchAsync(
@@ -42,6 +45,15 @@ export const register = catchAsync(
         user.password = hashPass;
 
         //* handle profile_image upload
+        if(file){
+            //* upload to cloudinary
+            const { path, public_id}= await upload(file, uploadFolder);
+            user.profile_image = {
+                path,
+                public_id
+            };
+
+        }
 
         //! save user
         await user.save();
