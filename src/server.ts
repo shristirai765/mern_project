@@ -1,8 +1,13 @@
+// import dotenv from "dotenv";
+import "dotenv/config";
+// import + call in a same line
+
 import app from "./app";
 import { connectDatabase } from "./config/db.config";
+import ENV_CONFIG from "./config/env.config";
 
-const PORT = 8080;
-const DB_URL = "mongodb://localhost:27017/team_14_db";
+const PORT = ENV_CONFIG.PORT;
+const DB_URI = ENV_CONFIG.DB_URI;
 // const DB_URL = 'mongodb+srv://';
 
 
@@ -11,4 +16,4 @@ app.listen(PORT, ()=>{
     console.log(`Server is running at http://localhost:${PORT}`);
 });
 
-connectDatabase(DB_URL);
+connectDatabase(DB_URI);
