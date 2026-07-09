@@ -6,8 +6,10 @@ import {
   update,
   remove,
 } from "../controllers/category.controller";
+import { uploader } from "../middlewares/multer.middleware";
 
 const router = express.Router();
+const upload = uploader();
 
 //* get all category
 router.get("/", getAll);
@@ -16,7 +18,7 @@ router.get("/", getAll);
 router.get("/:id", getById);
 
 //* create/post
-router.post("/", create);
+router.post("/",upload.single("logo"), create);
 
 //* update/put
 router.put("/:id", update);

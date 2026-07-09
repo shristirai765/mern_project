@@ -6,6 +6,10 @@ import {
   getById,
   update,
 } from "../controllers/brand.controller";
+import { uploader } from "../middlewares/multer.middleware";
+
+
+const upload = uploader();
 
 const router = express.Router();
 
@@ -16,7 +20,7 @@ router.get("/", getAll);
 router.get("/:id", getById);
 
 // create
-router.post("/", createBrand);
+router.post("/", upload.single("logo"), createBrand);
 
 // update
 router.put("/:id", update);
