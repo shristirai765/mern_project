@@ -21,7 +21,7 @@ router.get("/:id", getById);
 router.post("/",upload.single("logo"), create);
 
 //* update/put
-router.put("/:id", update);
+router.put("/:id",upload.single("logo"), update);
 
 //* delete
 router.delete("/:id", remove);
