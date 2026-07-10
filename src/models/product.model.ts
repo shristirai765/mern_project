@@ -4,7 +4,7 @@ import ImageSchema from "./image.model";
 
 const productSchema = new mongoose.Schema({
     name:{
-        name: String,
+        type: String,
         required: [true, "name is required"],
         trim: true,
         minLength: 3,
