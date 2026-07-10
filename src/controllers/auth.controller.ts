@@ -4,6 +4,8 @@ import {hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
+import { generateJwtToken } from "../utils/jwt.utils";
+import { IJwtPayload } from "../types/global.types";
 
 const uploadFolder = '/profile_image';
 
@@ -96,13 +98,25 @@ export const login = catchAsync(
 
 
         //* todo: generate jwt token
+        // to know the user has logged in next time
+        // json webtoken
+
+        const payload:IJwtPayload = {
+            _id: user._id,
+            email: user.email,
+            role: user.role,
+        };
+        const access_token = generateJwtToken(payload);
 
         //* send success response
         res.status(201).json({
             message: "login success",
             status: "success",
             success: true,
-            data: user,
+            data: {
+                user, 
+                access_token,
+            },
         });
     
 }
