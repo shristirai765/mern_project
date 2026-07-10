@@ -6,6 +6,8 @@ import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
 import { generateJwtToken } from "../utils/jwt.utils";
 import { IJwtPayload } from "../types/global.types";
+import ENV_CONFIG from "../config/env.config";
+import { sendResponse } from "../utils/sendResponse.utils";
 
 const uploadFolder = '/profile_image';
 
@@ -108,16 +110,30 @@ export const login = catchAsync(
         };
         const access_token = generateJwtToken(payload);
 
+        res.cookie('access_token', access_token,{
+            httpOnly: ENV_CONFIG.NODE_ENV === "development" ? false: true,
+            secure: ENV_CONFIG.NODE_ENV === "development" ? false: true,
+            maxAge: 7 * 24* 60 *60 *1000,
+            sameSite: ENV_CONFIG.NODE_ENV === "development" ? 'lax': 'none',
+        });
+
         //* send success response
-        res.status(201).json({
-            message: "login success",
-            status: "success",
-            success: true,
-            data: {
-                user, 
-                access_token,
+        sendResponse(res,{
+            message: "Login message",
+            statusCode: 201,
+            data:{
+                user, access_token,
             },
         });
+        // res.status(201).json({
+        //     message: "login success",
+        //     status: "success",
+        //     success: true,
+        //     data: {
+        //         user, 
+        //         access_token,
+        //     },
+        // });
     
 }
 )
