@@ -2,10 +2,11 @@ import {Response, Request, NextFunction} from "express";
 import User from "../models/user.model";
 import AppError from "../utils/appError.utils";
 import { Role } from "../types/enum.types";
+import { catchAsync } from "../utils/catchAsync.utils";
 
 //! get all users
-export const getAll = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const getAll = catchAsync(
+    async(req: Request, res: Response, next: NextFunction)=>{
         const user = await User.find({ role: Role.USER});
 
         //* send success response
@@ -16,15 +17,13 @@ export const getAll = async(req: Request, res: Response, next: NextFunction)=>{
             data: user,
         });
 
-    }catch(error){
-        next(error);
     }
-}
+)
 
 
 //! get all admins
-export const getAllAdmins = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const getAllAdmins = catchAsync(
+    async(req: Request, res: Response, next: NextFunction)=>{
         const admins = await User.find({
             role:{
                 $in: [Role.ADMIN, Role.SUPER_ADMIN],
@@ -39,14 +38,13 @@ export const getAllAdmins = async(req: Request, res: Response, next: NextFunctio
             data: admins,
         });
 
-    }catch(error){
-        next(error);
+
     }
-}
+)
 
 //! get user by id
-export const getById = async(req: Request, res: Response, next: NextFunction)=>{
-    try{
+export const getById = catchAsync(
+    async(req: Request, res: Response, next: NextFunction)=>{
         const {id} = req.params;
 
 
@@ -63,9 +61,7 @@ export const getById = async(req: Request, res: Response, next: NextFunction)=>{
             data: user,
         });
 
-    }catch(error){
-        next(error);
     }
-};
+)
 
 //* delete user

@@ -46,18 +46,12 @@ export const createBrand = catchAsync(
 //* read/ get
 export const getAll = catchAsync(
     async (req: Request, res: Response, next: NextFunction)=>{
-        const {name, description} = req.body;
-
-        if(!name){
-            throw new AppError ("name is required", 400);
-        }
-
-        const brand = new Brand({name, description});
+        const brand = await Brand.find({});
         
         //* handle logo upload
 
         //* save brand
-        await brand.save();
+        // await brand.save();
         res.status(201).json({
             message: "brand created",
             success: true,
@@ -93,22 +87,23 @@ export const getById = catchAsync(
 
 //* update
 export const update = catchAsync(
-    async(req: Request, res: Response, next: NextFunction)=>{
-        const {id}= req.params;
-        const brand = await Brand.findByIdAndUpdate({_id: id});
-        if(!brand ){
-            throw new AppError("brand not found", 404);
-        }
-
-        res.status(201).json({
-            message: "brand updated",
-            success: true,
-            status: "success",
-            data: brand
-        });
-
+    async (req: Request, res: Response)=>{
+            const {id} = req.params;
+            const {name, description} = req.body;
+            
+            const updatedBrand = await Brand.findByIdAndUpdate({_id: id},{name, description});
     
-}
+            if(!updatedBrand) throw new AppError("Product not found", 404);
+    
+            res.status(200).json({
+                message: `product by ${id} updated`,
+                success: true,
+                status: "success",
+                data: updatedBrand,
+            });
+    
+    
+    }
 );
 
 //* delete
@@ -124,7 +119,7 @@ export const remove = catchAsync(
             message: "brand updated",
             success: true,
             status: "success",
-            data: brand
+            data: null
         });
 
     

@@ -59,9 +59,9 @@ export const create = catchAsync(
     const category = new Category({ name, description });
 
     const { path, public_id}= await upload(file, uploadFolder);
-                        category.logo = {
-                            path,
-                            public_id
+    category.logo = {
+      path,
+      public_id
     };
 
     await category.save();
@@ -72,7 +72,7 @@ export const create = catchAsync(
       success: true,
       data: category,
     });
-  },
+  }
 );
 
 //* update  -> atit
