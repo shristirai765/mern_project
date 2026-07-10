@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ImageSchema from "./image.model";
 // name, description, logo
 // schema , model
 
@@ -16,7 +17,8 @@ const brandSchema = new mongoose.Schema({
         maxLength: 500,
     },
     logo:{
-        type: String,
+        type: ImageSchema,
+        required: [true, "logo is required"],
         trim: true,
 
     }

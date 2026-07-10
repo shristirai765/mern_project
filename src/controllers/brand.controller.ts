@@ -2,13 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import AppError from "../utils/appError.utils";
 import Brand from "../models/brand.model";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { upload } from "../utils/cloudinary.utils";
 
+const uploadFolder = '/logo';
 
 
 //* create
 export const createBrand = catchAsync(
     async (req: Request, res: Response)=>{
         const {name, description} = req.body;
+
+        const file = req.file;
+        if(!file){
+            throw new AppError ("file is required", 400);
+        }
 
         if(!name){
             throw new AppError ("name is required", 400);
@@ -18,6 +25,12 @@ export const createBrand = catchAsync(
         }
 
         const brand = new Brand({name, description});
+
+        const { path, public_id}= await upload(file, uploadFolder);
+                    brand.logo = {
+                        path,
+                        public_id
+        };
         
         await brand.save();
         res.status(201).json({

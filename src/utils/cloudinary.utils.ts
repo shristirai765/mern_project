@@ -11,8 +11,8 @@ export const upload = async(file: Express.Multer.File, dir = "/")=>{
             unique_filename: true,
             folder: folder,
             transformation:{
-                height: 1000,
-                width: 1000,
+                height: 400,
+                width: 400,
                 fetch_format: "auto",
                 format: "auto",
                 crop: "fill",
