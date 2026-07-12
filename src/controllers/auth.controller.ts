@@ -62,12 +62,17 @@ export const register = catchAsync(
         //! save user
         await user.save();
 
+        //* converting mongoose doc to js oject
+        const {password: user_pass, ...rest} = user.toObject();
+
         //* success response
         res.status(201).json({
                 message: "Account created",
                 success: true,
                 status: "success",
-                data: user,
+                data:{
+                    user: rest,
+                }
             });
 
     
@@ -117,12 +122,14 @@ export const login = catchAsync(
             sameSite: ENV_CONFIG.NODE_ENV === "development" ? 'lax': 'none',
         });
 
+        const {password: p, ...rest} = user.toObject();
         //* send success response
         sendResponse(res,{
             message: "Login message",
             statusCode: 201,
             data:{
-                user, access_token,
+                user: rest,
+                 access_token,
             },
         });
         // res.status(201).json({
@@ -136,9 +143,43 @@ export const login = catchAsync(
         // });
     
 }
-)
+);
+
+//* logout
 
 //* get profile
+
+//* change profile image
+export const chnageProfileImage = catchAsync(
+    async(req:Request, res: Response)=>{
+       const {_id} = req.user;
+       const file = req.file;
+       if(!file){
+        throw new AppError("Image is requuired", 400);
+       }
+       const user = await User.findOne({_id: _id});
+       if(!user){
+        throw new AppError("Profile not found", 404);
+       }
+
+       // delete old image
+    //    await delete
+
+       const {path, public_id} = await upload(file, uploadFolder);
+       user.profile_image = {
+        path,
+        public_id,
+       };
+
+       //* send success respnse
+       sendResponse(res,{
+        message: "Profile updated",
+        statusCode: 200,
+        data: user
+       })
+    }
+)
+
 //* change password
 //* forgot password
 //* change email
