@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 // @types/packagename
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-
+import cookieParser from "cookie-parser";
 //! importing routes
 import routes from "./routes";
 
@@ -10,6 +10,7 @@ const app = express();
 
 //! using middlewares
 app.use(express.json({limit: "10mb"}));
+app.use(cookieParser());
 
 
 //* health route
