@@ -162,8 +162,8 @@ export const chnageProfileImage = catchAsync(
         throw new AppError("Profile not found", 404);
        }
 
-       // delete old image
-    //    await delete
+       //! delete old image
+        //    await delete
 
        const {path, public_id} = await upload(file, uploadFolder);
        user.profile_image = {
