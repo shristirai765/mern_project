@@ -22,6 +22,11 @@ const ENV_CONFIG = {
     //* cookie
 
     //* email/node mailer
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_SERVICE: process.env.SMTP_SERVICE,
+    SMTP_PORT : Number(process.env.SMTP_PORT ?? "587"),
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
 };
 
 export default ENV_CONFIG;

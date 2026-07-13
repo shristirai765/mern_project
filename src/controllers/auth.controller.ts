@@ -150,7 +150,7 @@ export const login = catchAsync(
 //* get profile
 
 //* change profile image
-export const chnageProfileImage = catchAsync(
+export const changeProfileImage = catchAsync(
     async(req:Request, res: Response)=>{
        const {_id} = req.user;
        const file = req.file;

@@ -21,7 +21,7 @@ export const createProduct = catchAsync(
 
         const product = new Product({name, brand, price});
         const{path, public_id} = await upload(file, uploadFolder);
-        product.product_picture = {
+        product.cover_image = {
         path,
         public_id
         };
@@ -100,3 +100,11 @@ export const remove = catchAsync(
         });
     }
 );
+
+//* get by category
+
+//* get by brand
+
+//* get new arrivals
+
+//* get featured
