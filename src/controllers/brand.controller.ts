@@ -3,6 +3,7 @@ import AppError from "../utils/appError.utils";
 import Brand from "../models/brand.model";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
+import { sendResponse } from "../utils/sendResponse.utils";
 
 const uploadFolder = '/logo';
 
@@ -33,11 +34,10 @@ export const createBrand = catchAsync(
         };
         
         await brand.save();
-        res.status(201).json({
+        sendResponse(res,{
             message: "brand created",
-            success: true,
-            status: "success",
-            data: brand
+            statusCode: 201,
+            data: brand,
         });
         
 }
@@ -47,17 +47,19 @@ export const createBrand = catchAsync(
 export const getAll = catchAsync(
     async (req: Request, res: Response, next: NextFunction)=>{
         const brand = await Brand.find({});
-        
-        //* handle logo upload
 
-        //* save brand
-        // await brand.save();
-        res.status(201).json({
-            message: "brand created",
-            success: true,
-            status: "success",
-            data: brand
+        sendResponse(res,{
+            message: "all brands fetched",
+            statusCode: 201,
+            data: brand,
         });
+
+        // res.status(201).json({
+        //     message: "brand fetched",
+        //     success: true,
+        //     status: "success",
+        //     data: brand
+        // });
         
 
    
@@ -74,12 +76,17 @@ export const getById = catchAsync(
             throw new AppError("brand not found", 404);
         }
 
-        res.status(201).json({
-            message: `brand fetched by ${id}`,
-            success: true,
-            status: "success",
-            data: brand
+        sendResponse(res,{
+            message: "brand fetched by id",
+            statusCode: 201,
+            data: brand,
         });
+        // res.status(201).json({
+        //     message: `brand fetched by ${id}`,
+        //     success: true,
+        //     status: "success",
+        //     data: brand
+        // });
 
    
 }
@@ -95,12 +102,17 @@ export const update = catchAsync(
     
             if(!updatedBrand) throw new AppError("Product not found", 404);
     
-            res.status(200).json({
-                message: `product by ${id} updated`,
-                success: true,
-                status: "success",
+            sendResponse(res,{
+                message: "brand updated",
+                statusCode: 200,
                 data: updatedBrand,
             });
+            // res.status(200).json({
+            //     message: `product by ${id} updated`,
+            //     success: true,
+            //     status: "success",
+            //     data: updatedBrand,
+            // });
     
     
     }
@@ -115,12 +127,17 @@ export const remove = catchAsync(
             throw new AppError("brand not found", 404);
         }
 
-        res.status(201).json({
-            message: "brand updated",
-            success: true,
-            status: "success",
-            data: null
+        sendResponse(res,{
+            message: "brands deleted",
+            statusCode: 201,
+            data: null,
         });
+        // res.status(201).json({
+        //     message: "brand deleted",
+        //     success: true,
+        //     status: "success",
+        //     data: null
+        // });
 
     
 }

@@ -3,7 +3,7 @@ import User from "../models/user.model";
 import {hashPassword, comparePassword } from "../utils/bcrypt.utils";
 import AppError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
-import { upload } from "../utils/cloudinary.utils";
+import { deleteFile, upload } from "../utils/cloudinary.utils";
 import { generateJwtToken } from "../utils/jwt.utils";
 import { IJwtPayload } from "../types/global.types";
 import ENV_CONFIG from "../config/env.config";
@@ -163,8 +163,10 @@ export const chnageProfileImage = catchAsync(
        }
 
        //! delete old image
-        //    await delete
+       if(user.profile_image && user.profile_image.public_id){
+            await deleteFile(user.profile_image.public_id);
 
+       }
        const {path, public_id} = await upload(file, uploadFolder);
        user.profile_image = {
         path,

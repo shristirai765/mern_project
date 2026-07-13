@@ -3,6 +3,7 @@ import Category from "../models/category.model";
 import { catchAsync } from "../utils/catchAsync.utils";
 import AppError from "../utils/appError.utils";
 import { upload } from "../utils/cloudinary.utils";
+import { sendResponse } from "../utils/sendResponse.utils";
 
 
 const uploadFolder = '/logo';
@@ -14,11 +15,16 @@ export const getAll = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const categories = await Category.find();
 
-    res.status(200).json({
-      success: true,
-      count: categories.length,
-      data: categories,
+    sendResponse(res,{
+      message: "all categories fetched",
+      statusCode: 200,
+      data: categories
     });
+    // res.status(200).json({
+    //   success: true,
+    //   count: categories.length,
+    //   data: categories,
+    // });
   },
 );
 
@@ -33,12 +39,18 @@ export const getById = catchAsync(
       throw new AppError("category not found", 404);
     }
 
-    res.status(200).json({
-      message: `category by id ${id} is fetched`,
-      success: true,
-      status: "success",
-      data: category,
+    sendResponse(res,{
+        message: "category fetched by id",
+        statusCode: 201,
+        data: category,
     });
+
+    // res.status(200).json({
+    //   message: `category by id ${id} is fetched`,
+    //   success: true,
+    //   status: "success",
+    //   data: category,
+    // });
   },
 );
 
@@ -66,12 +78,17 @@ export const create = catchAsync(
 
     await category.save();
 
-    res.status(201).json({
-      message: "Category created successfully",
-      status: "success",
-      success: true,
-      data: category,
+    sendResponse(res,{
+        message: "category created successully",
+        statusCode: 201,
+        data: category,
     });
+    // res.status(201).json({
+    //   message: "Category created successfully",
+    //   status: "success",
+    //   success: true,
+    //   data: category,
+    // });
   }
 );
 
@@ -95,11 +112,16 @@ export const update = catchAsync(
       { new: true },
     );
 
-    res.status(201).json({
-      success: true,
-      message: "Brand updated successfully.",
+    sendResponse(res,{
+      message: "category updated",
+      statusCode: 201,
       data: updatedCategory,
     });
+    // res.status(201).json({
+    //   success: true,
+    //   message: "Brand updated successfully.",
+    //   data: updatedCategory,
+    // });
   },
 );
 
@@ -113,11 +135,17 @@ export const remove = catchAsync(
       throw new AppError("category not found.", 404);
     }
 
-    res.status(200).json({
-      message: "category deleted successfully.",
-      success: true,
-      status: "success",
-      data: null,
+    sendResponse(res,{
+      message: "category deleted successfully",
+      statusCode: 200,
+      data: null
     });
+
+    // res.status(200).json({
+    //   message: "category deleted successfully.",
+    //   success: true,
+    //   status: "success",
+    //   data: null,
+    // });
   },
 );

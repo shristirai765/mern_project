@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login } from "../controllers/auth.controller";
+import { register, login, chnageProfileImage } from "../controllers/auth.controller";
 import { uploader } from "../middlewares/multer.middleware";
 
 
@@ -12,6 +12,9 @@ router.post("/register", upload.single("profile_image"), register);
 
 //* login
 router.post("/login", login);
+
+//* change profile image
+router.put("/update", chnageProfileImage);
 
 
 
