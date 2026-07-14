@@ -164,12 +164,31 @@ export const getByBrand = catchAsync(
 //* get new arrivals
 export const getNewArrivals = catchAsync(
     async(req: Request, res: Response)=>{
-        // const new_arrival = await Product.find({new_arrival: true}).populate(product);
+        const new_arrival = await Product.find({new_arrival: true}).populate("product");
+        if(!new_arrival){
+            throw new AppError("New arrivals not found", 404);
+        }
+
+        sendResponse(res,{
+            message: "New arrivals fetched",
+            statusCode: 200,
+            data: new_arrival,
+        });
     }
 )
 
 //* get featured
 export const getFeatured = catchAsync(
     async(req: Request, res: Response)=>{
+        const is_featured = await Product.find({is_featured: true}).populate("product");
+        if(!is_featured){
+            throw new AppError("Featured not found", 404);
+        }
+
+        sendResponse(res,{
+            message: "New arrivals fetched",
+            statusCode: 200,
+            data: is_featured,
+        });
     }
 )

@@ -169,8 +169,20 @@ export const login = catchAsync(
 );
 
 //* logout
+export const logout = catchAsync(
+    async(req: Request, res: Response)=>{
+        // const {token} = req.token;
+        
+
+    }
+)
 
 //* get profile
+export const getProfile= catchAsync(
+    async(req: Request, res: Response)=>{
+
+    }
+)
 
 //* change profile image
 export const changeProfileImage = catchAsync(
