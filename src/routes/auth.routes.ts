@@ -3,6 +3,8 @@ import { register, login, changeProfileImage } from "../controllers/auth.control
 import { uploader } from "../middlewares/multer.middleware";
 import { User_only } from "../types/enum.types";
 import { authenticate } from "../middlewares/auth.middleware";
+import { validate } from "../middlewares/validator.middleware";
+import { registerUserSchema } from "../validators/auth.validator";
 
 
 const router = express.Router();
@@ -10,7 +12,7 @@ const router = express.Router();
 const upload = uploader();
 
 //* register
-router.post("/register", upload.single("profile_image"), register);
+router.post("/register", upload.single("profile_image"), validate(registerUserSchema),register);
 
 //* login
 router.post("/login", login);

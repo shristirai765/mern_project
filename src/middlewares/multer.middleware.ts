@@ -37,8 +37,10 @@ export const uploader = ()=>{
             'image/jpeg',
             'image/svg+xml',
             'doc/pdf',
+            'application/octet-stream'
 
         ];
+        console.log(file)
         if(!allowed_mime_type.includes(file.mimetype)){
             callback(new AppError(`${file.mimetype} is not allowed`,  422));
         }else{

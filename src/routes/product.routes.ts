@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct, getAll, getById, remove, update } from "../controllers/product.controller";
+import { createProduct, getAll, getById, getNewArrivals, remove, update } from "../controllers/product.controller";
 import { uploader } from "../middlewares/multer.middleware";
 
 
@@ -16,5 +16,7 @@ router.post("/",upload.single("product_picture"), createProduct);
 router.put("/:id",upload.single("product_picture"), update);
 
 router.delete("/:id", remove);
+
+router.get("/filter", getNewArrivals);
 
 export default router;

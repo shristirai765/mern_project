@@ -1,6 +1,8 @@
+import ENV_CONFIG from "../config/env.config";
+
 // Generate HTML template for Account Created email
 const formatDate = (createdAt: NativeDate)=>{
-    const formattedDate = new Date(createdAt).toLocaleString("en=US",{
+    const formattedDate = new Date(createdAt).toLocaleString("en-US",{
         dateStyle: "long",
         timeStyle: "short",
     });
@@ -82,6 +84,16 @@ export const newLoginDetectedHtml = ({
                   If you don't recognize this activity, change your password
                   immediately and review your account security settings.
                 </p>
+             
+
+            <div style="text-align:center;margin:36px 0;">
+                <a
+                  href="{"${ENV_CONFIG.FRONT_END_URL}/auth/change-password"}"
+                  target= "_blank"
+                  style="display:inline-block;background:#7c3aed;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:bold;"
+                >
+                  Change Password
+                </a>
               </div>
 
               
@@ -92,7 +104,7 @@ export const newLoginDetectedHtml = ({
 
               <p style="font-size:14px;color:#666;margin-top:32px;">
                 Thanks,<br />
-                <strong>Your Team</strong>
+                <strong>${ENV_CONFIG.APP_NAME} Team</strong>
               </p>
 
             </td>
@@ -100,7 +112,7 @@ export const newLoginDetectedHtml = ({
 
           <tr>
             <td style="background:#faf5ff;padding:20px;text-align:center;font-size:12px;color:#777777;">
-              © ${new Date().getFullYear()} Your Company. All rights reserved.
+              © ${new Date().getFullYear()} ${ENV_CONFIG.APP_NAME}. All rights reserved.
             </td>
           </tr>
 

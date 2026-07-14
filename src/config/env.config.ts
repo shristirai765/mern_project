@@ -4,6 +4,8 @@ import "dotenv/config";
 const ENV_CONFIG = {
     //* environment
     NODE_ENV : process.env.NODE_ENV,
+    APP_NAME : process.env.APP_NAME,
+    FRONT_END_URL : process.env.FRONT_END_URL,
     PORT : process.env.PORT,
 
     //* database
@@ -28,6 +30,8 @@ const ENV_CONFIG = {
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASS: process.env.SMTP_PASS,
     SMTP_MAIL_FROM: process.env.SMTP_MAIL_FROM,
+
+    
 };
 
 export default ENV_CONFIG;

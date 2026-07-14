@@ -3,16 +3,18 @@ import AppError from "../utils/appError.utils";
 import Product from "../models/product.model";
 import { upload } from "../utils/cloudinary.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { sendResponse } from "../utils/sendResponse.utils";
 
 const uploadFolder = "/product_picture";
 
 export const createProduct = catchAsync(
     async(req: Request, res: Response)=>{
-        const {name, brand, price} = req.body;
+        const {name, description, brand, price} = req.body;
         const file = req.file;
 
         if(!file) throw new AppError("file is required", 404);
         if(!name) throw new AppError("name is required", 404);
+        if(!description) throw new AppError("description is required", 404);
         if(!brand) throw new AppError("brand is required", 404);
         if(!price) throw new AppError("price is required", 404);
 
@@ -28,12 +30,17 @@ export const createProduct = catchAsync(
 
         await product.save();
 
-        res.status(200).json({
+        sendResponse(res,{
             message: "product created successfully",
-            success: true,
-            status: "success",
+            statusCode: 200,
             data: product,
         });
+        // res.status(200).json({
+        //     message: "product created successfully",
+        //     success: true,
+        //     status: "success",
+        //     data: product,
+        // });
     }
 );
 
@@ -41,12 +48,17 @@ export const getAll = catchAsync(
     async (req: Request, res: Response)=>{
     const product = await Product.find({});
 
-    res.status(200).json({
-        message: "All products fetched",
-        success: true,
-        status: "success",
-        data: product,
-    });
+    sendResponse(res,{
+            message: "all products fetched",
+            statusCode: 200,
+            data: product,
+        });
+    // res.status(200).json({
+    //     message: "All products fetched",
+    //     success: true,
+    //     status: "success",
+    //     data: product,
+    // });
     }
 );
 
@@ -57,30 +69,41 @@ export const getById = catchAsync(
         const product = await Product.findOne({_id: id});
         if(!product) throw new AppError("Product not found", 404);
 
-        res.status(200).json({
+        sendResponse(res,{
             message: `Product by ${id} fetched`,
-            success: true,
-            status: "success",
+            statusCode: 200,
             data: product,
         });
+        // res.status(200).json({
+        //     message: `Product by ${id} fetched`,
+        //     success: true,
+        //     status: "success",
+        //     data: product,
+        // });
     }
 );
 
 export const update = catchAsync(
     async (req: Request, res: Response)=>{
         const {id} = req.params;
-        const {name, brand, price} = req.body;
+        const {name, description, brand, price} = req.body;
         
-        const updatedProduct = await Product.findByIdAndUpdate({_id: id},{name, brand, price});
+        const updatedProduct = await Product.findByIdAndUpdate({_id: id},{name,description, brand, price});
 
         if(!updatedProduct) throw new AppError("Product not found", 404);
 
-        res.status(200).json({
-            message: `product by ${id} updated`,
-            success: true,
-            status: "success",
+        sendResponse(res,{
+            message: "product updated",
+            statusCode: 201,
             data: updatedProduct,
         });
+        
+        // res.status(200).json({
+        //     message: `product by ${id} updated`,
+        //     success: true,
+        //     status: "success",
+        //     data: updatedProduct,
+        // });
 
 
     }
@@ -92,19 +115,61 @@ export const remove = catchAsync(
         const deletedProduct = await Product.findByIdAndDelete({_id: id});
         if(!deletedProduct) throw new AppError("Product not found", 404);
 
-        res.status(200).json({
-            message: `Product by ${id} deleted successfully`,
-            success: true,
-            status: "success",
-            data: null
+        sendResponse(res,{
+            message: "product deleted successfully",
+            statusCode: 200,
+            data: deletedProduct,
         });
+        // res.status(200).json({
+        //     message: `Product by ${id} deleted successfully`,
+        //     success: true,
+        //     status: "success",
+        //     data: null
+        // });
     }
 );
 
 //* get by category
+export const getByCategory = catchAsync(
+    async (req: Request, res: Response)=>{
+        const {categoryId} = req.params;
+
+        const product = await Product.find({category: categoryId});
+        if(!product) throw new AppError("Product not found", 404);
+
+        sendResponse(res,{
+            message: `Product by ${categoryId} fetched`,
+            statusCode: 200,
+            data: product,
+        });
+    }
+)
 
 //* get by brand
+export const getByBrand = catchAsync(
+    async (req: Request, res: Response)=>{
+        const {brandId} = req.params;
+
+        const product = await Product.find({brand: brandId});
+        if(!product) throw new AppError("Product not found", 404);
+
+        sendResponse(res,{
+            message: `Product by ${brandId} fetched`,
+            statusCode: 200,
+            data: product,
+        });
+    }
+)
 
 //* get new arrivals
+export const getNewArrivals = catchAsync(
+    async(req: Request, res: Response)=>{
+        // const new_arrival = await Product.find({new_arrival: true}).populate(product);
+    }
+)
 
 //* get featured
+export const getFeatured = catchAsync(
+    async(req: Request, res: Response)=>{
+    }
+)
