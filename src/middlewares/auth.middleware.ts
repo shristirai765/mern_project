@@ -18,7 +18,7 @@ export const authenticate = (roles?: Role[]) => {
             const access_token = cookies["access_token"];
             console.log(access_token);
             if(!access_token){
-                throw new AppError("Unauthorized . LOgin required", 401);
+                throw new AppError("Unauthorized . Login required", 401);
             }
             //* 2. verify access token
             const decoded_data = verifyJwtToken(access_token);
@@ -36,7 +36,7 @@ export const authenticate = (roles?: Role[]) => {
                     sameSite: ENV_CONFIG.NODE_ENV === "development" ? 'lax': 'none',
                 })
                     
-                throw new AppError("TOken is expired. Access denied.", 401);
+                throw new AppError("Token is expired. Access denied.", 401);
             }
             console.log(decoded_data)
 
