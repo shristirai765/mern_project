@@ -4,12 +4,13 @@ import Product from "../models/product.model";
 import { upload } from "../utils/cloudinary.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { sendResponse } from "../utils/sendResponse.utils";
+import mongoose from "mongoose";
 
 const uploadFolder = "/product_picture";
 
 export const createProduct = catchAsync(
     async(req: Request, res: Response)=>{
-        const {name, description, brand, price} = req.body;
+        const {name, description, brand, price, category} = req.body;
         const file = req.file;
 
         if(!file) throw new AppError("file is required", 404);
@@ -17,11 +18,25 @@ export const createProduct = catchAsync(
         if(!description) throw new AppError("description is required", 404);
         if(!brand) throw new AppError("brand is required", 404);
         if(!price) throw new AppError("price is required", 404);
+        if(!category) throw new AppError("file is required", 404);
+
 
         const existingProduct = await Product.findOne({ name });
         if(existingProduct) throw new AppError("product already exists", 404);
 
-        const product = new Product({name, brand, price});
+        const category_ref = await mongoose.model("category").findOne({name: 'mobile'});
+        if(!category_ref) throw new AppError("Category 'mobile' not found", 404);
+
+        const brand_ref = await mongoose.model("brand").findOne({name: 'Apple'});
+        if(!brand_ref) throw new AppError("Brand 'apple' not found", 404);
+
+        const product = new Product({
+            name,
+            description, 
+            brand: brand_ref._id, 
+            price, 
+            category: category_ref._id
+        });
         const{path, public_id} = await upload(file, uploadFolder);
         product.cover_image = {
         path,
@@ -164,8 +179,8 @@ export const getByBrand = catchAsync(
 //* get new arrivals
 export const getNewArrivals = catchAsync(
     async(req: Request, res: Response)=>{
-        const new_arrival = await Product.find({new_arrival: true}).populate("product");
-        if(!new_arrival){
+        const new_arrival = await Product.find({new_arrival: true});
+        if(new_arrival.length === 0){
             throw new AppError("New arrivals not found", 404);
         }
 
@@ -180,13 +195,13 @@ export const getNewArrivals = catchAsync(
 //* get featured
 export const getFeatured = catchAsync(
     async(req: Request, res: Response)=>{
-        const is_featured = await Product.find({is_featured: true}).populate("product");
-        if(!is_featured){
+        const is_featured = await Product.find({is_featured: true});
+        if(is_featured.length === 0){
             throw new AppError("Featured not found", 404);
         }
 
         sendResponse(res,{
-            message: "New arrivals fetched",
+            message: "featured product fetched",
             statusCode: 200,
             data: is_featured,
         });
