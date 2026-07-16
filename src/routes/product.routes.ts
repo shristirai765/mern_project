@@ -17,9 +17,27 @@ router.get("/is_featured", getFeatured);
 
 router.get("/:id", getById);
 
-router.post("/",upload.single("cover_image"),authenticate(All_admins), createProduct);
+router.post("/",upload.fields([
+    {
+        name: "cover_image",
+        maxCount: 1,
+    },
+    {
+        name: "images",
+        maxCount: 5,
+    }
+]),authenticate(All_admins), createProduct);
 
-router.put("/:id",upload.single("cover_image"),authenticate(All_admins), update);
+router.put("/:id",upload.fields([
+    {
+        name: "cover_image",
+        maxCount: 1,
+    },
+    {
+        name: "images",
+        maxCount: 5,
+    }
+]),authenticate(All_admins), update);
 
 router.delete("/:id",authenticate(All_admins), remove);
 
