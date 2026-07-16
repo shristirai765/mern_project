@@ -46,7 +46,29 @@ export const createBrand = catchAsync(
 //* read/ get
 export const getAll = catchAsync(
     async (req: Request, res: Response, next: NextFunction)=>{
-        const brand = await Brand.find({});
+
+        const { query } = req.query;
+        const filter: Record<string, any> = {};
+
+        if(query){
+            filter.$or =[
+                {
+                    name:{
+                        $regex: query,
+                        $options: "i",
+                    },
+                },
+                {
+                    description:{
+                        $regex: query,
+                    $options: "i",
+                    }
+                },
+            ];
+        }
+
+        const brand = await Brand.find(filter);
+
 
         sendResponse(res,{
             message: "all brands fetched",
