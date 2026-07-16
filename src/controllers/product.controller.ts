@@ -86,7 +86,27 @@ export const createProduct = catchAsync(
 
 export const getAll = catchAsync(
     async (req: Request, res: Response)=>{
-    const product = await Product.find({});
+        
+        const {query} = req.query;
+        const filter: Record<string, any> = {};
+
+        if(query){
+            filter.$or =[
+                {
+                    name:{
+                        $regex: query,
+                        $options: "i",
+                    },
+                },
+                {
+                    description:{
+                        $regex: query,
+                    $options: "i",
+                    }
+                },
+            ];
+        }
+    const product = await Product.find(filter);
 
     sendResponse(res,{
             message: "all products fetched",
