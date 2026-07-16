@@ -3,6 +3,7 @@ import User from "../models/user.model";
 import AppError from "../utils/appError.utils";
 import { Role } from "../types/enum.types";
 import { catchAsync } from "../utils/catchAsync.utils";
+import { sendResponse } from "../utils/sendResponse.utils";
 
 //! get all users
 export const getAll = catchAsync(
@@ -10,12 +11,17 @@ export const getAll = catchAsync(
         const user = await User.find({ role: Role.USER});
 
         //* send success response
-        res.status(200).json({
-            message: "all users fetched",
-            status: "success",
-            success: true,
-            data: user,
+        sendResponse(res,{
+            message: `all users fetched`,
+            statusCode: 200,
+            data: user
         });
+        // res.status(200).json({
+        //     message: "all users fetched",
+        //     status: "success",
+        //     success: true,
+        //     data: user,
+        // });
 
     }
 )
@@ -31,12 +37,17 @@ export const getAllAdmins = catchAsync(
         });
 
         //* send success response
-        res.status(200).json({
-            message: "all admins fetched",
-            status: "success",
-            success: true,
-            data: admins,
+        sendResponse(res,{
+            message: `all admins fetched`,
+            statusCode: 200,
+            data: admins
         });
+        // res.status(200).json({
+        //     message: "all admins fetched",
+        //     status: "success",
+        //     success: true,
+        //     data: admins,
+        // });
 
 
     }
@@ -54,14 +65,36 @@ export const getById = catchAsync(
         }
 
         //* send success response
-        res.status(201).json({
+        sendResponse(res,{
             message: `user fetched by ${id}`,
-            status: "success",
-            success: true,
-            data: user,
+            statusCode: 200,
+            data: user
         });
+        // res.status(201).json({
+        //     message: `user fetched by ${id}`,
+        //     status: "success",
+        //     success: true,
+        //     data: user,
+        // });
 
     }
 )
 
 //* delete user
+export const remove = catchAsync(
+    async(req: Request, res: Response)=>{
+        const { id} = req.params;
+        const removedUser = await User.findByIdAndDelete({_id: id});
+        if(!removedUser){
+            throw new AppError("User not found", 404);
+        }
+
+        //* send success response
+        sendResponse(res,{
+            message: `user deleted successfully`,
+            statusCode: 200,
+            data: removedUser
+        });
+
+    }
+)

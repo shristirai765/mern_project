@@ -180,7 +180,17 @@ export const logout = catchAsync(
 //* get profile
 export const getProfile= catchAsync(
     async(req: Request, res: Response)=>{
+        const {_id} = req.user;
+        const user = await User.findOne({_id: _id});
+        if(!user){
+         throw new AppError("Profile not found", 404);
+        }
 
+        sendResponse(res,{
+        message: "user profile",
+        statusCode: 200,
+        data: user
+       })
     }
 )
 
