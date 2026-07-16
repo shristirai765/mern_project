@@ -13,7 +13,27 @@ const uploadFolder = '/logo';
 //* get all -> sapana
 export const getAll = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const categories = await Category.find();
+
+    const { query } = req.query;
+    const filter: Record<string, any> = {};
+
+        if(query){
+            filter.$or =[
+                {
+                    name:{
+                        $regex: query,
+                        $options: "i",
+                    },
+                },
+                {
+                    description:{
+                        $regex: query,
+                    $options: "i",
+                    }
+                },
+            ];
+        }
+    const categories = await Category.find(filter);
 
     sendResponse(res,{
       message: "all categories fetched",
