@@ -8,7 +8,7 @@ import {
 } from "../controllers/brand.controller";
 import { uploader } from "../middlewares/multer.middleware";
 import { authenticate } from "../middlewares/auth.middleware";
-import { All_admins, Role } from "../types/enum.types";
+import { All_admins} from "../types/enum.types";
 
 
 const upload = uploader();
