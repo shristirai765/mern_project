@@ -77,6 +77,7 @@ export const getById = catchAsync(
 //* create  -> ashmita
 export const create = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.cookies)
     const { name, description } = req.body;
     const file = req.file;
     if (!file) throw new AppError("file is required", 404);

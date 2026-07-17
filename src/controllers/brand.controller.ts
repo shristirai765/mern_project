@@ -4,6 +4,7 @@ import Brand from "../models/brand.model";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { upload } from "../utils/cloudinary.utils";
 import { sendResponse } from "../utils/sendResponse.utils";
+import { getPagination } from "../utils/pagination.utils";
 
 const uploadFolder = '/logo';
 
@@ -47,7 +48,11 @@ export const createBrand = catchAsync(
 export const getAll = catchAsync(
     async (req: Request, res: Response, next: NextFunction)=>{
 
-        const { query } = req.query;
+        const { query, order= "DESC", sortBy= "price" , page= 1, limit = 10} = req.query;
+
+        const currentPage = Number(page);
+        const perPage = Number(limit);
+        const skip = (currentPage - 1) * perPage;
         const filter: Record<string, any> = {};
 
         if(query){
@@ -65,15 +70,50 @@ export const getAll = catchAsync(
                     }
                 },
             ];
+
+            //* for and
+            /*
+            filter.$and =[
+                {
+                    name:{
+                        $regex: query,
+                        $options: "i",
+                    },
+                },
+                {
+                    description:{
+                        $regex: query,
+                    $options: "i",
+                    }
+                },
+            ];
+
+            or
+
+            filter.name={}
+            filter.description={}
+
+            */
         }
 
-        const brand = await Brand.find(filter);
+        const brand = await Brand.find(filter)
+        .limit(perPage)
+        .skip(skip)
+        .sort({
+            [sortBy as string]: order === "DESC" ? -1: 1,
+        });
+
+
+            const totalCount = await Brand.countDocuments(filter);
 
 
         sendResponse(res,{
             message: "all brands fetched",
-            statusCode: 201,
-            data: brand,
+            statusCode: 200,
+            data: {
+                brand,
+                pagination: getPagination(totalCount, perPage, currentPage),
+            },
         });
 
         // res.status(201).json({

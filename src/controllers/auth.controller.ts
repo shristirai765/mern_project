@@ -10,6 +10,7 @@ import ENV_CONFIG from "../config/env.config";
 import { sendResponse } from "../utils/sendResponse.utils";
 import { sendEmail } from "../utils/emailServer.utils";
 import { accountCreatedHtml, newLoginDetectedHtml } from "../utils/emailTemplate.utils";
+import mongoose from "mongoose";
 
 const uploadFolder = '/profile_image';
 
@@ -102,6 +103,7 @@ export const login = catchAsync(
             throw new AppError("email is required", 400);
         }
         if(!password) throw new AppError("password is required", 400);
+        console.log("Mongoose readyState:", mongoose.connection.readyState);
 
         //* find user by email
         const user = await User.findOne({email: email}).select("+password"); //-password

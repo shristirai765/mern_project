@@ -4,90 +4,76 @@ import Product from "../models/product.model";
 import { deleteFile, upload } from "../utils/cloudinary.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { sendResponse } from "../utils/sendResponse.utils";
-import mongoose from "mongoose";
 
-const uploadFolder = "/product_picture";
+const uploadFolder = "/cover_image";
 
-export const createProduct = catchAsync(
-    async(req: Request, res: Response)=>{
-        const {name, description, brand, price, category} = req.body;
-        // const files = req.files as {[fieldname: string]: Express.Multer.File[]};
-        const {cover_image, images} = req.files as {
-            cover_image: Express.Multer.File[],
-            images?: Express.Multer.File[];
-        };
+export const createProduct = catchAsync(async (req, res) => {
+  const { cover_image, images } = req.files as {
+    cover_image: Express.Multer.File[];
+    images: Express.Multer.File[];
+  };
+  const {
+    name,
+    description,
+    price,
+    brand,
+    category,
+    new_arrival,
+    is_featured,
+  } = req.body;
 
-        if(!cover_image || !cover_image[0]) throw new AppError("cover image is required", 404);
+  if (!cover_image || !cover_image[0]) {
+    throw new AppError("cover image is required", 400);
+  }
 
-        if(!name) throw new AppError("name is required", 404);
-        if(!description) throw new AppError("description is required", 404);
-        if(!brand) throw new AppError("brand is required", 404);
-        if(!price) throw new AppError("price is required", 404);
-        if(!category) throw new AppError("file is required", 404);
+  const product = new Product({
+    name,
+    description,
+    price,
+    brand,
+    category,
+    new_arrival,
+    is_featured,
+  });
 
+  //* upload cover_image
+  const { path, public_id } = await upload(cover_image[0], uploadFolder);
+  product.cover_image = {
+    path,
+    public_id,
+  };
 
-        const existingProduct = await Product.findOne({ name });
-        if(existingProduct) throw new AppError("product already exists", 404);
+  //Promise.all(arr_promise)
+  //Promise.allSettled(arr_promise)
+  //Promise.race(arr_promise)
+  //Promise.any(arr_promise)
 
-        const category_ref = await mongoose.model("category").findOne({name: 'mobile'});
-        if(!category_ref) throw new AppError("Category 'mobile' not found", 404);
+  //* upload images
+  if (images && images.length > 0) {
+    const promises = images.map((file) => upload(file, uploadFolder));
+    const files = await Promise.allSettled(promises);
+    const fullFilled = files
+      .filter((promise) => promise.status === "fulfilled")
+      .map((img) => img.value);
+    product.set("images", fullFilled);
+  }
+  //* save product
+  await product.save();
 
-        const brand_ref = await mongoose.model("brand").findOne({name: 'Apple'});
-        if(!brand_ref) throw new AppError("Brand 'apple' not found", 404);
-
-        const product = new Product({
-            name,
-            description, 
-            brand: brand_ref._id, 
-            price, 
-            category: category_ref._id
-        });
-
-        //* upload cover image
-        const{path, public_id} = await upload(cover_image[0], uploadFolder);
-        product.cover_image = {
-        path,
-        public_id
-        };
-
-        //* upload images
-        if(images && images.length>0){
-            const promises = images.map((file)=> upload(file, uploadFolder));
-            const files = await Promise.allSettled(promises);
-            const fullFilled = files.filter(
-                (promise) => promise.status === "fulfilled")
-                .map((img)=> img.value);
-            //.map((img)=>{
-            //     return{
-            //         path.img.path,
-            //         public_id: img.public_id
-            //     }
-            // });
-
-            product.set("images", fullFilled);
-        }
-
-
-        await product.save();
-
-        sendResponse(res,{
-            message: "product created successfully",
-            statusCode: 201,
-            data: product,
-        });
-        // res.status(200).json({
-        //     message: "product created successfully",
-        //     success: true,
-        //     status: "success",
-        //     data: product,
-        // });
-    }
-);
+  //* send response
+  sendResponse(res, {
+    message: "product created",
+    data: product,
+    statusCode: 201,
+  });
+});
 
 export const getAll = catchAsync(
     async (req: Request, res: Response)=>{
         
         const {query} = req.query;
+        const { brand, category} = req.query;
+        const {minPrice , maxPrice} = req.query;
         const filter: Record<string, any> = {};
 
         if(query){
@@ -106,6 +92,38 @@ export const getAll = catchAsync(
                 },
             ];
         }
+
+        if(category){
+            filter.category = category;
+        }
+        if(brand){
+            filter.brand = brand;
+        }
+        //* price range
+
+        if(minPrice || maxPrice){
+            const low = Number(minPrice);
+            const high = Number(maxPrice);
+
+            if(low){
+                filter.price= {
+                    $gte: low,
+                }          
+            }
+            if(high){
+                filter.price= {
+                    $lte: high,
+                }          
+            }
+
+            if(low && high){
+                filter.price= {
+                    $lte: high,
+                    $gte: low,
+                };
+            }
+        }
+        
     const product = await Product.find(filter);
 
     sendResponse(res,{
