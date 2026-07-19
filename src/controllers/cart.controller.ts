@@ -5,8 +5,7 @@ import appError from "../utils/appError.utils";
 import { catchAsync } from "../utils/catchAsync.utils";
 import { sendResponse } from "../utils/sendResponse.utils";
 
-//* Add to Cart
-
+// * Add to Cart
 export const Add_Cart = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user._id;

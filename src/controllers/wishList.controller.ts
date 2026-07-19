@@ -27,14 +27,14 @@ export const Add_Wishlist = catchAsync(
     if (!wishlist) {
       wishlist = await Wishlist.create({
         user: userId,
-        products: [productId],
+        product: [productId],
       });
     } else {
-      if (wishlist.products.some((item) => item.toString() === productId)) {
+      if (wishlist.product.some((item) => item.toString() === productId)) {
         throw new appError("Product already exists in wishlist", 400);
       }
 
-      wishlist.products.push(productId);
+      wishlist.product.push(productId);
       await wishlist.save();
     }
 
@@ -84,7 +84,7 @@ export const Remove_Wishlist = catchAsync(
       throw new appError("Wishlist not found", 404);
     }
 
-    wishlist.products = wishlist.products.filter(
+    wishlist.product = wishlist.product.filter(
       (item) => item.toString() !== productId,
     );
 
@@ -110,7 +110,7 @@ export const Clear_Wishlist = catchAsync(
       throw new appError("Wishlist not found", 404);
     }
 
-    wishlist.products = [];
+    wishlist.product = [];
 
     await wishlist.save();
 
