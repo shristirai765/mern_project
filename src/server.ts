@@ -28,9 +28,12 @@ const server = app.listen(PORT, ()=>{
     // sendEmail();
 });
 
-process.on("uncaughtException", (error)=>{
-    console.log("uncaughtException", error);
-    process.exit(1);
+process.on("unhandledRejection", (error)=>{
+    console.log("unhandledRejection", error);
+    server.close(async(error)=>{
+        await mongoose.disconnect();
+        process.exit(1);
+    });
 });
 
 process.on("SIGINT", ()=>{
